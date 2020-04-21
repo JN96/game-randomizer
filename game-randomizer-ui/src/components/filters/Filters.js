@@ -6,7 +6,11 @@ class Filters extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            platforms: [],
+            genres: [],
+            games: []
+        };
 
         this.choosePlatformDropdown = this.handleChoosePlatformDropdown.bind(this);
         this.chooseGenreDropdown = this.handleChooseGenreDropdown.bind(this);
@@ -38,18 +42,30 @@ class Filters extends React.Component {
     componentDidMount() {
         filtersRest.getPlatforms()
             .then(data => {
-                console.log('platforms', data);
-            });
+                this.setState({
+                    platforms: data
+                });
+            }).catch(error => {
+                console.log('Get platforms returned error: ', error);
+        });
 
         filtersRest.getGenres()
             .then(data => {
-                console.log('genres', data);
-            });
+                this.setState({
+                   genres: data
+                });
+            }).catch(error => {
+                console.log('Get genres returned error: ', error)
+        });
 
         filtersRest.getGames()
             .then(data => {
-                console.log('games', data);
-            });
+                this.setState({
+                   games: data
+                });
+            }).catch(error => {
+                console.log('Get games returned error:', error);
+        });
     }
 
     render() {
@@ -61,7 +77,11 @@ class Filters extends React.Component {
                             <div className="control">
                                 <select value={this.state.platformValue} onChange={this.choosePlatformDropdown}>
                                     <option>Select Platform</option>
-                                    <option>Steam</option>
+                                    {this.state.platforms.map(platform => (
+                                        <option key={platform.name} value={platform.name}>
+                                            {platform.name}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
@@ -70,8 +90,12 @@ class Filters extends React.Component {
                         <div className="select">
                             <div className="control">
                                 <select value={this.state.genreValue} onChange={this.chooseGenreDropdown}>
-                                    <option>Select Genre</option>
-                                    <option>Action/Adventure</option>
+                                    <option>Select Platform</option>
+                                    {this.state.genres.map(genre => (
+                                        <option key={genre.name} value={genre.name}>
+                                            {genre.name}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>

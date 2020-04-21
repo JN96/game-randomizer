@@ -1,5 +1,5 @@
 import axios from 'axios';
-const url = 'http://localhost:3001/';
+const url = process.env.REACT_APP_LOCALHOST;
 
 class FiltersRest {
 
@@ -41,6 +41,10 @@ class FiltersRest {
             .catch(err => {
                 console.error(err);
             });
+    }
+
+    queryGames() {
+        //TODO: get games based on query data
     }
 
     getGames() {
