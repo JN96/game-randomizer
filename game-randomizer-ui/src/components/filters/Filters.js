@@ -1,6 +1,8 @@
 import React from 'react';
 import './Filters.css'
 import filtersRest from "./FiltersRest";
+import errorHandler from '../ErrorHandler';
+import Modal from '../modal/Modal';
 
 class Filters extends React.Component {
     constructor(props) {
@@ -9,7 +11,11 @@ class Filters extends React.Component {
         this.state = {
             platforms: [],
             genres: [],
-            games: []
+            games: [],
+            platformSelectedValue: null,
+            genreSelectedValue: null,
+            result: null,
+            errors: []
         };
 
         this.choosePlatformDropdown = this.handleChoosePlatformDropdown.bind(this);
@@ -19,18 +25,28 @@ class Filters extends React.Component {
 
     handleChoosePlatformDropdown(e) {
         this.setState({
-            platformValue: e.target.value
+            platformSelectedValue: e.target.value
         });
     }
 
     handleChooseGenreDropdown(e) {
         this.setState({
-            genreValue: e.target.value
+            genreSelectedValue: e.target.value
         });
     }
 
-    handleRandomizeClick(e) {
-        console.log('handleRandomizeClick', this.state);
+    handleRandomizeClick() {
+        filtersRest.queryGames(this.state.platformSelectedValue, this.state.genreSelectedValue)
+            .then(data => {
+                if (data) {
+                    this.setState({
+                        result: data
+                    });
+                    //TODO: send data to be randomized and return item to a view
+                }
+            }).catch(error => {
+            this.state.errors.push(errorHandler.handleError(error));
+        });
     }
 
     /* componentDidMount() will be called immediately when the component is mounted
@@ -42,70 +58,73 @@ class Filters extends React.Component {
     componentDidMount() {
         filtersRest.getPlatforms()
             .then(data => {
-                this.setState({
-                    platforms: data
-                });
+                if (data) {
+                    this.setState({
+                        platforms: data
+                    });
+                }
             }).catch(error => {
-                console.log('Get platforms returned error: ', error);
+            this.state.errors.push(errorHandler.handleError(error));
         });
 
         filtersRest.getGenres()
             .then(data => {
-                this.setState({
-                   genres: data
-                });
+                if (data) {
+                    this.setState({
+                        genres: data
+                    });
+                }
             }).catch(error => {
-                console.log('Get genres returned error: ', error)
-        });
-
-        filtersRest.getGames()
-            .then(data => {
-                this.setState({
-                   games: data
-                });
-            }).catch(error => {
-                console.log('Get games returned error:', error);
+            this.state.errors.push(errorHandler.handleError(error));
         });
     }
 
     render() {
         return (
-            <div className='filters'>
-                <div className='columns'>
-                    <div className='column'>
-                        <div className="select">
-                            <div className="control">
-                                <select value={this.state.platformValue} onChange={this.choosePlatformDropdown}>
-                                    <option>Select Platform</option>
-                                    {this.state.platforms.map(platform => (
-                                        <option key={platform.name} value={platform.name}>
-                                            {platform.name}
-                                        </option>
-                                    ))}
-                                </select>
+            <div>
+                <div className='section _filters'>
+                    <div className='container'>
+                        <div className='columns is-centered'>
+                            <div className='column'>
+                                <div className="select">
+                                    <div className="control">
+                                        <select onChange={this.choosePlatformDropdown}>
+                                            <option>Select Platform</option>
+                                            {this.state.platforms ? this.state.platforms.map(platform => (
+                                                <option key={platform.name} value={platform.id}>
+                                                    {platform.name}
+                                                </option>
+                                            )) : null}
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className='column'>
-                        <div className="select">
-                            <div className="control">
-                                <select value={this.state.genreValue} onChange={this.chooseGenreDropdown}>
-                                    <option>Select Platform</option>
-                                    {this.state.genres.map(genre => (
-                                        <option key={genre.name} value={genre.name}>
-                                            {genre.name}
-                                        </option>
-                                    ))}
-                                </select>
+                            <div className='column'>
+                                <div className="select">
+                                    <div className="control">
+                                        <select value={this.state.genreValue} onChange={this.chooseGenreDropdown}>
+                                            <option>Select Genre</option>
+                                            {this.state.genres.map(genre => (
+                                                <option key={genre.name} value={genre.id}>
+                                                    {genre.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className='column'>
-                        <div className="control">
-                            <button className='button is-light' onClick={this.randomizeButton}>RANDOMIZE</button>
+                            <div className='column'>
+                                <div className="control">
+                                    <button className='button is-light' onClick={this.randomizeButton}>RANDOMIZE</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {this.state.errors.length > 0 ?
+                    //TODO: error handling for no response/500 response from server
+                    <Modal data={this.state.errors}/> : null
+                }
             </div>
         )
     }

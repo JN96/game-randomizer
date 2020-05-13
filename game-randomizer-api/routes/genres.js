@@ -4,13 +4,13 @@ var router = express.Router();
 
 router.get('/genres', function(req, res, next) {
     axios({
-        url: "https://api-v3.igdb.com/genres",
+        url: 'https://api-v3.igdb.com/genres',
         method: 'GET',
         headers: {
             'Accept': 'application/json',
             'user-key': process.env.IGDB_API_KEY
         },
-        data: "fields name;"
+        data: "fields id, name; limit 20;"
     })
         .then(response => {
             console.log(response.data);
