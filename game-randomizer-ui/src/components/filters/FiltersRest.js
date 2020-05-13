@@ -14,12 +14,9 @@ class FiltersRest {
             .then(response => {
                 if (response.status !== 200) {
                     console.log('Looks like there was a problem. Status Code: ' + response.status);
-                    return;
+                    return response.status;
                 }
                 return response.data;
-            })
-            .catch(err => {
-                console.error(err);
             });
     }
 
@@ -34,17 +31,31 @@ class FiltersRest {
             .then(response => {
                 if (response.status !== 200) {
                     console.log('Looks like there was a problem. Status Code: ' + response.status);
-                    return;
+                    return response.status;
                 }
                 return response.data;
-            })
-            .catch(err => {
-                console.error(err);
             });
     }
 
-    queryGames() {
-        //TODO: get games based on query data
+    queryGames(platform, genre) {
+        return axios({
+            url: url + 'api/games/query',
+            params: {
+                platform: platform,
+                genre: genre
+            },
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' + response.status);
+                    return response.status;
+                }
+                return response.data;
+            })
     }
 
     getGames() {
@@ -58,12 +69,9 @@ class FiltersRest {
            .then(response => {
                 if (response.status !== 200) {
                     console.log('Looks like there was a problem. Status Code: ' + response.status);
-                    return;
+                    return response.status;
                 }
                 return response.data;
-            })
-            .catch(err => {
-                console.error(err);
             });
     }
 }
