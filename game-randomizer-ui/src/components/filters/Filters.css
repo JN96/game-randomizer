@@ -1,6 +1,9 @@
-._filters {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+._filters>.section>.container {
+    max-width: 660px;
+}
+
+.card>.card-content {
+    min-height: 150px;
+    max-height: 200px;
+    overflow-y: auto;
 }

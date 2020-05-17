@@ -28,7 +28,7 @@ router.post('/games/query', function (req, res, next) {
             'Accept': 'application/json',
             'user-key': process.env.IGDB_API_KEY
         },
-        data: "fields id, name, genres.name, summary; where (platforms = " + req.query.platform + " & genres = (" + req.query.genre + ")); limit 20;"
+        data: "fields id, name, genres.name, summary; where (platforms = " + req.query.platform + " & genres = (" + req.query.genre + ")); limit 500;"
     })
         .then(response => {
             res.send(response.data);

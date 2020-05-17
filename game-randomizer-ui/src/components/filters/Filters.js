@@ -2,6 +2,7 @@ import React from 'react';
 import './Filters.css'
 import filtersRest from "./FiltersRest";
 import errorHandler from '../ErrorHandler';
+import Loader from '../loader/Loader';
 import Modal from '../modal/Modal';
 
 class Filters extends React.Component {
@@ -14,7 +15,8 @@ class Filters extends React.Component {
             platformSelectedValue: null,
             genreSelectedValue: null,
             queryResult: null,
-            randomizedGame: [],
+            randomizedGame: {},
+            loaderState: false,
             errors: []
         };
 
@@ -23,12 +25,6 @@ class Filters extends React.Component {
         this.randomizeButton = this.handleRandomizeClick.bind(this);
     }
 
-    /* componentDidMount() will be called immediately when the component is mounted
-* ideal for placing REST calls
-*
-* componentWillUnmount() will be called immediately when a component is destroyed
-* ideal for performing cleanups
-* */
     componentDidMount() {
         filtersRest.getPlatforms()
             .then(data => {
@@ -66,8 +62,10 @@ class Filters extends React.Component {
     }
 
     handleRandomizeClick() {
-        //TODO: implement loader for rest calls
         //TODO: cache games if list is the same? local/session storage?
+        this.setState({
+            loaderState: true
+        });
         filtersRest.queryGames(this.state.platformSelectedValue, this.state.genreSelectedValue)
             .then(data => {
                 if (data) {
@@ -78,6 +76,9 @@ class Filters extends React.Component {
                 }
             }).then(queryResultData => {
                 this.randomizeGame(queryResultData);
+                this.setState({
+                    loaderState: false
+                });
         }).catch(error => {
             this.state.errors.push(errorHandler.handleError(error));
         });
@@ -95,42 +96,42 @@ class Filters extends React.Component {
             <div className='_filters'>
                 <div className='section'>
                     <div className='container'>
-                        <div className='columns is-centered'>
-                            <div className='column'>
-                                <div className="select">
+                        <div className='content'>
+                            <div className='columns'>
+                                <div className='column'>
+                                    <div className="select">
+                                        <div className="control">
+                                            <select onChange={this.choosePlatformDropdown}>
+                                                <option>Select Platform</option>
+                                                {this.state.platforms ? this.state.platforms.map(platform => (
+                                                    <option key={platform.name} value={platform.id}>
+                                                        {platform.name}
+                                                    </option>
+                                                )) : null}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='column'>
+                                    <div className='select'>
+                                        <div className='control'>
+                                            <select onChange={this.chooseGenreDropdown}>
+                                                <option>Select Genre</option>
+                                                {this.state.genres.map(genre => (
+                                                    <option key={genre.name} value={genre.id}>
+                                                        {genre.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='column'>
                                     <div className="control">
-                                        <select onChange={this.choosePlatformDropdown}>
-                                            <option>Select Platform</option>
-                                            {this.state.platforms ? this.state.platforms.map(platform => (
-                                                <option key={platform.name} value={platform.id}>
-                                                    {platform.name}
-                                                </option>
-                                            )) : null}
-                                        </select>
+                                        <button className='button is-light' onClick={this.randomizeButton}>RANDOMIZE</button>
                                     </div>
                                 </div>
                             </div>
-                            <div className='column'>
-                                <div className='select'>
-                                    <div className='control'>
-                                        <select onChange={this.chooseGenreDropdown}>
-                                            <option>Select Genre</option>
-                                            {this.state.genres.map(genre => (
-                                                <option key={genre.name} value={genre.id}>
-                                                    {genre.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='column'>
-                                <div className="control">
-                                    <button className='button is-light' onClick={this.randomizeButton}>RANDOMIZE</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='column'>
                             <div className='card'>
                                 <div className='card-header'>
                                     <p className="card-header-title is-centered">
@@ -140,21 +141,22 @@ class Filters extends React.Component {
                                 <div className='card-content'>
                                     <div className='content'>
                                         <p>
-
-                                        </p>
-                                        <p>
                                             {this.state.randomizedGame.summary}
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        {this.state.errors.length > 0 ?
+                            //TODO: error handling for no response/500 response from server
+                            //TODO: error handler for if no filters are selected and the randomize button is clicked
+                            //TODO: error handling for if response object/this.state.randomizedGame is empty
+                            //TODO: cut down error response object and send only what's needed from the errorHandler
+                            <Modal data={this.state.errors}/> : null
+                        }
                     </div>
-                    {this.state.errors.length > 0 ?
-                        //TODO: error handling for no response/500 response from server
-                        <Modal data={this.state.errors}/> : null
-                    }
                 </div>
+                <Loader showLoader={this.state.loaderState}/>
             </div>
         )
     }
