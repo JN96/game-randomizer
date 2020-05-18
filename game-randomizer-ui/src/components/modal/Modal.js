@@ -17,7 +17,6 @@ class Modal extends React.Component{
     }
 
     render() {
-
         if (this.props.data) {
             return (
                     <div className="modal is-active">
@@ -29,9 +28,9 @@ class Modal extends React.Component{
                         </header>
                         <section className="modal-card-body">
                             {this.props.data.map(item => (
-                                <div>
+                                <div key={item.uid}>
                                     <p>{item.message}</p>
-                                    <p>{item.config.url}</p>
+                                    <p>{item.urlResponse}</p>
                                     <p>{item.timestamp}</p>
                                     <br/>
                                 </div>
