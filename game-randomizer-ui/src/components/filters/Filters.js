@@ -151,7 +151,7 @@ class Filters extends React.Component {
                             //TODO: error handling for no response/500 response from server
                             //TODO: error handler for if no filters are selected and the randomize button is clicked
                             //TODO: error handling for if response object/this.state.randomizedGame is empty
-                            //TODO: cut down error response object and send only what's needed from the errorHandler
+                            //TODO: debug error modal and see why multiple errors aren't being displayed in the model
                             <Modal data={this.state.errors}/> : null
                         }
                     </div>
