@@ -4,6 +4,7 @@ import filtersRest from "./FiltersRest";
 import errorHandler from '../ErrorHandler';
 import Loader from '../loader/Loader';
 import Modal from '../modal/Modal';
+import Dictionary from '../../locales/dictionary'
 
 class Filters extends React.Component {
     constructor(props) {
@@ -34,7 +35,7 @@ class Filters extends React.Component {
                     });
                 }
             }).catch(error => {
-            this.state.errors.push(errorHandler.handleError(error));
+                this.state.errors.push(errorHandler.handleError(error));
         });
 
         filtersRest.getGenres()
@@ -45,7 +46,7 @@ class Filters extends React.Component {
                     });
                 }
             }).catch(error => {
-            this.state.errors.push(errorHandler.handleError(error));
+                this.state.errors.push(errorHandler.handleError(error));
         });
     }
 
@@ -151,8 +152,12 @@ class Filters extends React.Component {
                             //TODO: error handling for no response/500 response from server
                             //TODO: error handler for if no filters are selected and the randomize button is clicked
                             //TODO: error handling for if response object/this.state.randomizedGame is empty
-                            //TODO: debug error modal and see why multiple errors aren't being displayed in the model
-                            <Modal data={this.state.errors}/> : null
+                            //TODO: debug error modal and see why multiple modals won't show if more than error exists
+                            <Modal
+                                header={Dictionary.error.header}
+                                message={Dictionary.error.message}
+                                description={Dictionary.error.description}
+                            /> : null
                         }
                     </div>
                 </div>

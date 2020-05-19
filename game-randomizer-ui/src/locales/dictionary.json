@@ -1,0 +1,7 @@
+{
+  "error": {
+    "header": "Error",
+    "message": "Request failed.",
+    "description": "Contact the server administrator for further assistance."
+  }
+}

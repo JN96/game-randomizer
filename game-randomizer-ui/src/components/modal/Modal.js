@@ -17,32 +17,30 @@ class Modal extends React.Component{
     }
 
     render() {
-        if (this.props.data) {
-            return (
-                    <div className="modal is-active">
-                    <div className="modal-background"></div>
-                    <div className="modal-card">
-                        <header className="modal-card-head">
-                            <p className="modal-card-title">Error</p>
-                            <button className="delete" aria-label="close" onClick={this.handleOnClose}></button>
-                        </header>
-                        <section className="modal-card-body">
-                            {this.props.data.map(item => (
-                                <div key={item.uid}>
-                                    <p>{item.message}</p>
-                                    <p>{item.urlResponse}</p>
-                                    <p>{item.timestamp}</p>
-                                    <br/>
-                                </div>
-                            ))}
-                        </section>
-                        <footer className="modal-card-foot">
-                            <button className="button is-info" onClick={this.handleOnClose}>Cancel</button>
-                        </footer>
-                    </div>
+        return (
+                <div className="modal is-active">
+                <div className="modal-background"></div>
+                <div className="modal-card">
+                    <header className="modal-card-head">
+                        <p className="modal-card-title">
+                            {this.props.header}
+                        </p>
+                        <button className="delete" aria-label="close" onClick={this.handleOnClose}></button>
+                    </header>
+                    <section className="modal-card-body">
+                        <p>
+                            {this.props.message}
+                        </p>
+                        <p>
+                            {this.props.description}
+                        </p>
+                    </section>
+                    <footer className="modal-card-foot">
+                        <button className="button is-info" onClick={this.handleOnClose}>Cancel</button>
+                    </footer>
                 </div>
-            )
-        }
+            </div>
+        )
     }
 }
 
