@@ -1,7 +1,14 @@
 {
-  "error": {
-    "header": "Error",
-    "message": "Request failed.",
-    "description": "Contact the server administrator for further assistance."
+  "errors": {
+    "restError": {
+      "header": "Error",
+      "message": "Request failed.",
+      "description": "Contact the server administrator for further assistance."
+    },
+    "emptyQueryError": {
+      "header": "Empty Query",
+      "message": "One or more values has not been selected.",
+      "description": "Please select the required values and try again."
+    }
   }
 }
