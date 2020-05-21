@@ -18,7 +18,8 @@ class Filters extends React.Component {
             queryResult: null,
             randomizedGame: {},
             loaderState: false,
-            errors: []
+            isEmptyQuery: false,
+            restErrors: []
         };
 
         this.choosePlatformDropdown = this.handleChoosePlatformDropdown.bind(this);
@@ -35,7 +36,7 @@ class Filters extends React.Component {
                     });
                 }
             }).catch(error => {
-                this.state.errors.push(errorHandler.handleError(error));
+                this.state.restErrors.push(errorHandler.handleError(error));
         });
 
         filtersRest.getGenres()
@@ -46,7 +47,7 @@ class Filters extends React.Component {
                     });
                 }
             }).catch(error => {
-                this.state.errors.push(errorHandler.handleError(error));
+                this.state.restErrors.push(errorHandler.handleError(error));
         });
     }
 
@@ -64,6 +65,16 @@ class Filters extends React.Component {
 
     handleRandomizeClick() {
         //TODO: cache games if list is the same? local/session storage?
+        if (this.state.genreSelectedValue == null || this.state.platformSelectedValue == null) {
+            return this.setState({
+                isEmptyQuery: true
+            });
+        } else {
+            this.setState({
+                isEmptyQuery: false
+            });
+        }
+
         this.setState({
             loaderState: true
         });
@@ -81,7 +92,8 @@ class Filters extends React.Component {
                     loaderState: false
                 });
         }).catch(error => {
-            this.state.errors.push(errorHandler.handleError(error));
+            console.log('test');
+            this.state.restErrors.push(errorHandler.handleError(error));
         });
     }
 
@@ -148,15 +160,23 @@ class Filters extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        {this.state.errors.length > 0 ?
+                        {this.state.restErrors.length > 0 ?
                             //TODO: error handling for no response/500 response from server
                             //TODO: error handler for if no filters are selected and the randomize button is clicked
                             //TODO: error handling for if response object/this.state.randomizedGame is empty
                             //TODO: debug error modal and see why multiple modals won't show if more than error exists
+                            //TODO: change error modal to utility like class and use vanilla javascript to attach to DOM
                             <Modal
-                                header={Dictionary.error.header}
-                                message={Dictionary.error.message}
-                                description={Dictionary.error.description}
+                                header={Dictionary.errors.restError.header}
+                                message={Dictionary.errors.restError.message}
+                                description={Dictionary.errors.restError.description}
+                            /> : null
+                        }
+                        {this.state.isEmptyQuery === true ?
+                            <Modal
+                                header={Dictionary.errors.emptyQueryError.header}
+                                message={Dictionary.errors.emptyQueryError.message}
+                                description={Dictionary.errors.emptyQueryError.description}
                             /> : null
                         }
                     </div>
